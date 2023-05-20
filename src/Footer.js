@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./App.css";
 import "./reset.css";
-import heroku from "./heroku2.svg";
+import varcel from "./vercel-icon-svgrepo-com.svg";
 import github from "./github.svg";
 
 class Footer extends Component {
@@ -14,8 +14,8 @@ class Footer extends Component {
           </a>
         </div>
         <div className="icons">
-          <a href="https://raf-react-app.herokuapp.com/">
-            <img src={heroku} alt="Heroku Logo" />
+          <a href="https://pixfinder.vercel.app/">
+            <img src={varcel} alt="Varcel Logo" />
           </a>
         </div>
       </footer>
