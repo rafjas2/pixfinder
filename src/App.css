@@ -356,7 +356,7 @@
   .search-box-center[name="searchData"] {
     width: 80%;
     height: 40px;
-    transform: translate(-50%, 50%);
+    transform: translate(-50%, 100%);
     font-size: 16px;
   }
 }
