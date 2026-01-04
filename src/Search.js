@@ -1,78 +1,80 @@
-import React, { Component } from "react";
+import React from "react";
 import "./App.css";
-import "./reset.css";
 import Gallery from "./Gallery";
+import Hero from "./Hero";
 
-class Search extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      searchData: "",
-      perPage: 24,
-      apiUrl: "https://pixabay.com/api",
-      apiToken: "11779217-a9b30eeba040492648696ebe5",
-      images: []
-    };
+const Search = () => {
+  const [searchData, setSearchData] = React.useState("");
+  const [images, setImages] = React.useState([]);
+  const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState(null);
+  const [isSearched, setIsSearched] = React.useState(false);
 
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleKeyPress = this.handleKeyPress.bind(this);
-  }
+  const perPage = 24;
+  const apiUrl = process.env.REACT_APP_PIXABAY_API_URL;
+  const apiToken = process.env.REACT_APP_PIXABAY_API_KEY;
 
-  handleChange(event) {
-    this.setState({ searchData: event.target.value });
-  }
-
-  handleSubmit(event) {
-    fetch(
-      `${this.state.apiUrl}/?key=${this.state.apiToken}&q=${
-        this.state.searchData
-      }&image_type=photo&per_page=${this.state.perPage}&safesearch=true`
-    )
-      .then(res => res.json())
-      .then(data =>
-        this.setState({
-          images: data.hits.map(hit => {
-            return {
-              image: hit.webformatURL,
-              id: hit.id,
-              tags: hit.tags,
-              user: hit.user,
-              userImg: hit.userImageURL
-            };
-          })
-        })
-      )
-      .catch(error => console.log(error));
-    event.preventDefault();
-  }
-
-  handleKeyPress = e => {
-    const bgImg = document.querySelector("#bg-img");
-
-    if (e.charCode === 13) {
-      bgImg.style.display = "none";
-      e.target.classList.remove("search-box-center");
-      e.target.classList.add("search-box-top");
-    }
+  const handleChange = (event) => {
+    setSearchData(event.target.value);
   };
 
-  render() {
-    return (
-      <form onSubmit={this.handleSubmit} id="search-box">
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    setLoading(true);
+    setError(null);
+    setIsSearched(true);
+
+    // Legacy DOM manipulation removed
+
+    fetch(
+      `${apiUrl}/?key=${apiToken}&q=${searchData}&image_type=photo&per_page=${perPage}&safesearch=true`
+    )
+      .then(res => {
+        if (!res.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return res.json();
+      })
+      .then(data => {
+        const hits = data.hits.map(hit => ({
+          image: hit.webformatURL,
+          id: hit.id,
+          tags: hit.tags,
+          user: hit.user,
+          userImg: hit.userImageURL
+        }));
+        setImages(hits);
+        setLoading(false);
+      })
+      .catch(error => {
+        console.log(error);
+        setError("Failed to fetch images. Please try again.");
+        setLoading(false);
+      });
+  };
+
+  return (
+    <div>
+      {!isSearched && <Hero />}
+      <form onSubmit={handleSubmit} id="search-box">
         <input
-          className="search-box-center"
+          className={`search-box-center ${isSearched ? "active" : ""}`}
           name="searchData"
-          value={this.state.searchData}
-          onChange={this.handleChange}
-          onKeyPress={this.handleKeyPress}
+          value={searchData}
+          onChange={handleChange}
           placeholder="Search images"
           autoComplete="off"
         />
-        <Gallery images={this.state.images} />
       </form>
-    );
-  }
-}
+      {isSearched && (
+        <>
+          {loading && <p style={{ textAlign: "center", fontSize: "1.5rem", marginTop: "20px" }}>Loading...</p>}
+          {error && <p style={{ textAlign: "center", color: "red", fontSize: "1.2rem", marginTop: "20px" }}>{error}</p>}
+          <Gallery images={images} />
+        </>
+      )}
+    </div>
+  );
+};
 
 export default Search;

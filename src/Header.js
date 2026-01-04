@@ -1,15 +1,13 @@
-import React, { Component } from "react";
+import React from "react";
 import "./App.css";
-import "./reset.css";
 
-class Header extends Component {
-  render() {
-    return (
-      <header id="nav">
-        <h1>PixFinder</h1>
-      </header>
-    );
-  }
+
+const Header = ({ onReset }) => {
+  return (
+    <header id="nav">
+      <h1 onClick={onReset} style={{ cursor: "pointer" }}>PixFinder</h1>
+    </header>
+  );
 }
 
 export default Header;
