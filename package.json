@@ -34,5 +34,11 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "overrides": {
+    "nth-check": "^2.1.1",
+    "postcss": "^8.4.38",
+    "webpack-dev-server": "^4.15.2",
+    "path-to-regexp": "^0.1.12"
   }
 }
