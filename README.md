@@ -28,6 +28,35 @@ The app is broken down into simple, focused components:
 - `Gallery.js`: Iterates over the API response to render the image grid.
 - `Modal.js`: Handles the overlay logic for viewing specific image details.
 
+## 📁 Folder Structure
+
+```text
+pixfinder/
+├── public/
+│   ├── index.html        # Main HTML template
+│   └── ...
+├── src/
+│   ├── images/           # Static assets (SVGs, Backgrounds)
+│   ├── App.js            # Main application container
+│   ├── App.css           # Global UI styles and media queries
+│   ├── Header.js         # Top navigation and App reset trigger
+│   ├── Hero.js           # Initial landing view
+│   ├── Search.js         # Search bar and API data fetching logic
+│   ├── Gallery.js        # Maps API data to image grid
+│   ├── Modal.js          # Overlay view for image details
+│   └── index.js          # React application entry point
+├── package.json          # Project dependencies and npm scripts
+└── README.md             # Project documentation
+```
+
+## 🧠 Skills Demonstrated
+
+- **React Fundamentals**: Component lifecycle, functional/class architecture, and optimal component nesting.
+- **State Management**: Managing complex loading, error, and dynamic data states (`useState`) without relying on external libraries.
+- **Asynchronous JavaScript**: Fetching, parsing, and smoothly rendering third-party REST API data using Promises/`fetch`.
+- **Responsive Web Design**: Utilizing Vanilla CSS, Flexbox, and media queries to ensure a flawless experience on both mobile and desktop screens.
+- **UI/UX Principles**: Implemented interactive hover states, smooth modal overlays, and fallback UI for loading/error scenarios.
+
 ## 🚀 Getting Started
 
 ### Prerequisites
