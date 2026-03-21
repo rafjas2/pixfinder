@@ -1,70 +1,71 @@
-# Getting Started with Create React App
+# PixFinder 📸
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+PixFinder is a React-based image search application that allows users to seamlessly search for stunning, high-quality images provided by the [Pixabay API](https://pixabay.com/api/docs/). 
 
-## Available Scripts
 
-In the project directory, you can run:
 
-### `npm start`
+## ✨ Features
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- **Dynamic Image Search**: Instantly search for images using keywords.
+- **Responsive Gallery**: Images are displayed beautifully in a responsive, flex-based grid.
+- **Detailed Modal View**: Clicking on an image opens a focused modal displaying the full image alongside the author's avatar and name.
+- **Graceful Error Handling**: Catch and elegantly display errors when API requests fail. 
+- **Header Reset**: Click the application title to quickly clear the search and return to the home view.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 🛠️ Technology Stack
 
-### `npm test`
+- **React** (Bootstrapped with standard Create React App tools from its era)
+- **Vanilla CSS** (Custom responsive design with clean media queries and CSS animations)
+- **Pixabay REST API** (For retrieving image metadata)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## 🏗️ Architecture
 
-### `npm run build`
+The app is broken down into simple, focused components:
+- `App.js`: The root component managing the reset state.
+- `Header.js` & `Footer.js`: Layout wrappers.
+- `Hero.js`: The welcoming landing layout before a search is executed.
+- `Search.js`: Handles user input and executes the `fetch` request to the Pixabay API.
+- `Gallery.js`: Iterates over the API response to render the image grid.
+- `Modal.js`: Handles the overlay logic for viewing specific image details.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## 🚀 Getting Started
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Prerequisites
+You will need a free API Key from [Pixabay](https://pixabay.com/api/docs/).
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Installation
 
-### `npm run eject`
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/rafjas2/pixfinder.git
+   cd pixfinder
+   ```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+2. Install the necessary NPM packages:
+   ```bash
+   npm install
+   ```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+3. Configure your Environment Variables:
+   Create a `.env` file in the root directory and add your Pixabay API credentials:
+   ```env
+   REACT_APP_PIXABAY_API_URL=https://pixabay.com/api
+   REACT_APP_PIXABAY_API_KEY=your_api_key_here
+   ```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+4. Start the development server:
+   ```bash
+   npm start
+   ```
+   Open `http://localhost:3000` to view it in the browser.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## 📦 Building for Production
 
-## Learn More
+To create an optimized production build:
+```bash
+npm run build
+```
+The build output will be located in the `build/` folder, ready to be deployed to Vercel, Netlify, or any static hosting service.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+---
+*Built by Rafal Jasinski*
