@@ -22,7 +22,8 @@ export default async function handler(req: Request) {
     return new Response(JSON.stringify({ error: 'API key is not configured on the server' }), { status: 500 });
   }
 
-  const pixabayUrl = `https://pixabay.com/api/?key=${apiKey}&q=${encodeURIComponent(query)}&image_type=photo&per_page=${perPage}&safesearch=true`;
+  const pixabayApiUrl = process.env.PIXABAY_API_URL || 'https://pixabay.com/api/';
+  const pixabayUrl = `${pixabayApiUrl}/?key=${apiKey}&q=${encodeURIComponent(query)}&image_type=photo&per_page=${perPage}&safesearch=true`;
 
   try {
     const response = await fetch(pixabayUrl);
