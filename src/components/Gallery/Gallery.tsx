@@ -38,14 +38,14 @@ export function Gallery({ images }: GalleryProps) {
           >
             <img
               src={image.webformatURL}
-              alt={image.tags}
+              alt={`Photo by ${image.user}`}
               className="h-full w-full object-cover transition-opacity duration-300 group-hover:opacity-90"
               loading="lazy"
             />
             <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-               <p className="text-sm font-medium text-white truncate">{image.tags}</p>
+               <p className="text-sm font-medium text-white truncate">By {image.user}</p>
             </div>
-            <span className="sr-only">View image details for {image.tags}</span>
+            <span className="sr-only">View photo by {image.user}</span>
           </button>
         ))}
       </div>
@@ -56,7 +56,6 @@ export function Gallery({ images }: GalleryProps) {
           image={modalState.selectedImage.largeImageURL}
           userImg={modalState.selectedImage.userImageURL}
           user={modalState.selectedImage.user}
-          tags={modalState.selectedImage.tags}
           onClose={hideModal}
         />
       )}

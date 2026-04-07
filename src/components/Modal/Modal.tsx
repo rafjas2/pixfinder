@@ -4,13 +4,12 @@ import { useState } from 'react';
 interface ModalProps {
   isOpen: boolean;
   image: string;
-  tags: string;
   userImg: string | undefined;
   user: string;
   onClose: () => void;
 }
 
-export function Modal({ isOpen, image, tags, userImg, user, onClose }: ModalProps) {
+export function Modal({ isOpen, image, userImg, user, onClose }: ModalProps) {
   const [imgError, setImgError] = useState(false);
 
   if (!isOpen) {
@@ -31,38 +30,50 @@ export function Modal({ isOpen, image, tags, userImg, user, onClose }: ModalProp
           <X className="size-6 transition-transform duration-200 group-hover:rotate-90" />
         </button>
 
-        <div className="flex w-full items-center justify-center bg-black/5 md:w-3/5">
+        <div className="flex w-full overflow-hidden bg-black/5 md:w-3/5">
           <img
-            className="max-h-[60vh] w-full object-contain md:max-h-full md:h-full"
+            className="h-full w-full object-contain"
             src={image}
-            alt={tags}
+            alt={`Image by ${user}`}
           />
         </div>
 
-        <div className="flex w-full flex-col items-center justify-center bg-surface p-6 md:w-2/5 md:border-l md:border-border">
-          {hasImage ? (
-            <img
-              key={userImg}
-              className="size-24 rounded-full border-4 border-brand object-cover shadow-sm md:size-32 bg-white"
-              src={userImg}
-              alt={user}
-              onError={() => setImgError(true)}
-            />
-          ) : (
-            <div className="flex size-24 items-center justify-center rounded-full border-4 border-brand bg-brand/10 text-brand shadow-sm md:size-32">
-              <User className="size-12 md:size-16" strokeWidth={1.5} />
+        <div className="flex w-full flex-col justify-between bg-surface p-6 md:w-2/5 md:border-l md:border-border">
+          <div className="flex flex-1 flex-col items-center justify-center py-4">
+            <div className="relative group">
+              {hasImage ? (
+                <img
+                  key={userImg}
+                  className="size-24 rounded-full border-4 border-brand object-cover shadow-lg md:size-32 transition-transform duration-300 group-hover:scale-105"
+                  src={userImg}
+                  alt={user}
+                  onError={() => setImgError(true)}
+                />
+              ) : (
+                <div className="flex size-24 items-center justify-center rounded-full border-4 border-brand bg-brand/10 text-brand shadow-lg md:size-32">
+                  <User className="size-12 md:size-16" strokeWidth={1.5} />
+                </div>
+              )}
+              <div className="absolute -bottom-2 -right-2 flex size-10 items-center justify-center rounded-full bg-brand text-white shadow-md">
+                <User className="size-5" />
+              </div>
             </div>
-          )}
-          
-          <h4 className="mt-4 font-sans text-xl font-medium text-text md:text-2xl text-balance text-center">
-            By: {user}
-          </h4>
-          <div className="mt-6 flex flex-wrap gap-2 justify-center">
-            {tags.split(',').map((tag) => (
-              <span key={tag.trim()} className="inline-flex items-center rounded-full bg-brand/10 px-2.5 py-0.5 text-xs font-medium text-brand">
-                {tag.trim()}
-              </span>
-            ))}
+            
+            <h4 className="mt-6 font-sans text-2xl font-bold text-text md:text-3xl text-balance text-center leading-tight">
+              {user}
+            </h4>
+            <p className="mt-1 text-sm font-medium text-muted uppercase tracking-widest">Artist</p>
+
+            <div className="mt-8 h-px w-12 bg-border" />
+          </div>
+
+          <div className="mt-auto pt-6 text-center">
+             <button 
+               onClick={onClose}
+               className="w-full rounded-xl bg-brand py-3 text-sm font-bold text-white shadow-md transition-all hover:bg-brand-hover hover:shadow-lg active:scale-[0.98] md:hidden"
+             >
+               Close Preview
+             </button>
           </div>
         </div>
       </div>

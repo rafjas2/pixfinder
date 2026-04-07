@@ -4,7 +4,6 @@ export const pixabayHitSchema = z.object({
   id: z.number(),
   webformatURL: z.string().url(),
   largeImageURL: z.string().url(),
-  tags: z.string(),
   user: z.string(),
   userImageURL: z.string().url().or(z.string().length(0)), // Can be empty string
 });
