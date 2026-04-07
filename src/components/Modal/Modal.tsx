@@ -66,15 +66,6 @@ export function Modal({ isOpen, image, userImg, user, onClose }: ModalProps) {
 
             <div className="mt-8 h-px w-12 bg-border" />
           </div>
-
-          <div className="mt-auto pt-6 text-center">
-             <button 
-               onClick={onClose}
-               className="w-full rounded-xl bg-brand py-3 text-sm font-bold text-white shadow-md transition-all hover:bg-brand-hover hover:shadow-lg active:scale-[0.98] md:hidden"
-             >
-               Close Preview
-             </button>
-          </div>
         </div>
       </div>
     </div>
