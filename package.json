@@ -18,7 +18,10 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "test": "vitest",
-    "lint": "eslint src"
+    "test:ci": "vitest run",
+    "lint": "eslint src api",
+    "format": "prettier --write \"src/**/*.{ts,tsx}\" \"api/**/*.ts\" \"eslint.config.js\" \"vite.config.ts\" \"tsconfig.json\" \"package.json\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx}\" \"api/**/*.ts\" \"eslint.config.js\" \"vite.config.ts\" \"tsconfig.json\" \"package.json\""
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",

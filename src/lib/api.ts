@@ -1,19 +1,20 @@
 import { pixabayResponseSchema, type PixabayHit } from '@/types/pixabay';
+import { ENV } from '@/config/env';
 
-const pixabayApiUrl = import.meta.env.VITE_PIXABAY_API_URL || 'https://pixabay.com/api/';
-const pixabayToken = import.meta.env.VITE_PIXABAY_API_KEY;
-
-export async function fetchImages(query: string, perPage = 24): Promise<PixabayHit[]> {
+export async function fetchImages(
+  query: string,
+  perPage = 24
+): Promise<PixabayHit[]> {
   if (!query) return [];
-  
+
   // Use Vercel Serverless proxy in production to hide API key
-  const isProd = import.meta.env.PROD;
+  const isProd = ENV.IS_PROD;
   let url = '';
-  
+
   if (isProd) {
     url = `/api/search?q=${encodeURIComponent(query)}&per_page=${perPage}`;
   } else {
-    url = `${pixabayApiUrl}?key=${pixabayToken}&q=${encodeURIComponent(query)}&image_type=photo&per_page=${perPage}&safesearch=true`;
+    url = `${ENV.PIXABAY_API_URL}?key=${ENV.PIXABAY_API_KEY}&q=${encodeURIComponent(query)}&image_type=photo&per_page=${perPage}&safesearch=true`;
   }
 
   const response = await fetch(url);
@@ -23,11 +24,16 @@ export async function fetchImages(query: string, perPage = 24): Promise<PixabayH
     throw new Error(`API Error: ${errorText}`);
   }
 
-  const data = await response.json();
-  
+  let data: unknown;
+  try {
+    data = await response.json();
+  } catch {
+    throw new Error('Failed to parse server response as JSON');
+  }
+
   // Validate using zod
   const parsed = pixabayResponseSchema.safeParse(data);
-  
+
   if (!parsed.success) {
     console.error('API matching validation failed', parsed.error);
     throw new Error('Invalid data format received from API');

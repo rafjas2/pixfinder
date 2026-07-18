@@ -19,7 +19,12 @@ export function Search() {
     }
   }, [query]);
 
-  const { data: images, isLoading, isError, error } = useQuery({
+  const {
+    data: images,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
     queryKey: ['images', query],
     queryFn: () => fetchImages(query),
     enabled: query.length > 0,
@@ -29,8 +34,10 @@ export function Search() {
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const searchQuery = formData.get('searchData') as string;
-    
+    const rawSearchQuery = formData.get('searchData');
+    const searchQuery =
+      typeof rawSearchQuery === 'string' ? rawSearchQuery : '';
+
     if (searchQuery.trim()) {
       setSearchParams({ q: searchQuery.trim() });
     } else {
@@ -49,25 +56,34 @@ export function Search() {
   const isSearched = query.length > 0;
 
   return (
-    <main className="flex min-h-dvh w-full flex-col font-sans">
+    <main className="flex w-full flex-1 flex-col font-sans">
       {!isSearched && <Hero />}
-      
-      <div 
+
+      <div
         className={cn(
-          "flex w-full justify-center px-4 z-20",
-          isSearched 
-            ? "sticky top-16 bg-surface/80 py-4 shadow-sm backdrop-blur-md" 
-            : "absolute left-0 top-[72%] md:top-[68%] -translate-y-1/2"
+          'z-20 flex w-full justify-center px-4',
+          isSearched
+            ? 'bg-surface/80 sticky top-16 py-4 shadow-sm backdrop-blur-md'
+            : 'absolute top-[72%] left-0 -translate-y-1/2 md:top-[68%]'
         )}
       >
-        <form onSubmit={handleSubmit} className="relative w-full max-w-lg group">
+        <form
+          onSubmit={handleSubmit}
+          role="search"
+          className="group relative w-full max-w-lg"
+        >
           <div className="relative flex items-center">
-            <SearchIcon className="absolute left-3.5 size-5 text-muted group-focus-within:text-brand transition-colors" />
+            <SearchIcon
+              aria-hidden="true"
+              className="text-muted group-focus-within:text-brand absolute left-3.5 size-5 transition-colors"
+            />
             <input
               ref={inputRef}
               name="searchData"
+              id="search-input"
+              aria-label="Search high-resolution images"
               defaultValue={query}
-              className="w-full appearance-none rounded-xl border-2 border-brand bg-white py-2.5 pl-10 pr-12 text-base leading-normal text-text placeholder:text-muted shadow-sm transition-all focus-visible:border-brand-hover focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand/30"
+              className="border-brand text-text placeholder:text-muted focus-visible:border-brand-hover focus-visible:ring-brand/30 w-full appearance-none rounded-xl border-2 bg-white py-2.5 pr-12 pl-10 text-base leading-normal shadow-sm transition-all focus-visible:ring-4 focus-visible:outline-none"
               placeholder="Search high-resolution images..."
               autoComplete="off"
             />
@@ -75,7 +91,7 @@ export function Search() {
               <button
                 type="button"
                 onClick={handleClear}
-                className="absolute right-3 rounded-full p-1 text-muted transition-colors hover:bg-black/5 hover:text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+                className="text-muted hover:text-text focus-visible:ring-brand absolute right-3 rounded-full p-1 transition-colors hover:bg-black/5 focus-visible:ring-2 focus-visible:outline-none"
                 aria-label="Clear search"
               >
                 <X className="size-5" />
@@ -86,14 +102,16 @@ export function Search() {
       </div>
 
       {isSearched && (
-        <div className="flex-1 w-full pt-8 pb-16">
+        <div className="w-full flex-1 pt-8 pb-16">
           {isLoading ? (
-            <div className="flex w-full flex-col items-center justify-center py-20 text-brand">
+            <div className="text-brand flex w-full flex-col items-center justify-center py-20">
               <Loader2 className="size-12 animate-spin motion-reduce:animate-none" />
-              <p className="mt-4 text-lg font-medium">Fetching amazing images...</p>
+              <p className="mt-4 text-lg font-medium">
+                Fetching amazing images...
+              </p>
             </div>
           ) : isError ? (
-            <div className="mx-auto flex w-full max-w-md flex-col items-center justify-center rounded-xl border border-danger/20 bg-danger/5 p-8 text-center text-danger">
+            <div className="border-danger/20 bg-danger/5 text-danger mx-auto flex w-full max-w-md flex-col items-center justify-center rounded-xl border p-8 text-center">
               <AlertCircle className="size-10" />
               <p className="mt-4 text-lg font-medium">
                 {error instanceof Error ? error.message : 'An error occurred'}
@@ -102,9 +120,11 @@ export function Search() {
           ) : images && images.length > 0 ? (
             <Gallery images={images} />
           ) : (
-            <div className="flex w-full flex-col items-center justify-center py-20 text-muted">
+            <div className="text-muted flex w-full flex-col items-center justify-center py-20">
               <SearchIcon className="size-12 opacity-50" />
-              <p className="mt-4 text-lg font-medium">No images found for "{query}"</p>
+              <p className="mt-4 text-lg font-medium">
+                No images found for "{query}"
+              </p>
             </div>
           )}
         </div>

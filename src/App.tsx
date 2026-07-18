@@ -1,17 +1,25 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Outlet } from 'react-router-dom';
 import { Header } from '@/components/Header/Header';
 import { Footer } from '@/components/Footer/Footer';
 import { Search } from '@/components/Search/Search';
 
-export function App() {
+function AppLayout() {
   return (
-    <div className="flex min-h-dvh w-full flex-col bg-surface pt-16 pb-12 selection:bg-brand/30">
+    <div className="bg-surface selection:bg-brand/30 flex min-h-dvh w-full flex-col pt-16">
       <Header />
-      <Routes>
-        <Route path="/" element={<Search />} />
-        {/* We can map other routes here later if needed */}
-      </Routes>
+      <Outlet />
       <Footer />
     </div>
+  );
+}
+
+export function App() {
+  return (
+    <Routes>
+      <Route element={<AppLayout />}>
+        <Route path="/" element={<Search />} />
+        {/* We can map other routes here later if needed */}
+      </Route>
+    </Routes>
   );
 }

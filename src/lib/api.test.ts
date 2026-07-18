@@ -27,14 +27,13 @@ describe('fetchImages API', () => {
           tags: 'nature, forest',
           user: 'John',
           userImageURL: 'https://example.com/john.jpg',
-        }
-      ]
+        },
+      ],
     };
 
-    vi.mocked(global.fetch).mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockReponse,
-    } as unknown as Response);
+    vi.mocked(global.fetch).mockResolvedValueOnce(
+      new Response(JSON.stringify(mockReponse))
+    );
 
     const result = await fetchImages('nature');
     expect(result).toHaveLength(1);
@@ -43,11 +42,12 @@ describe('fetchImages API', () => {
   });
 
   it('throws an error if the network response is not ok', async () => {
-    vi.mocked(global.fetch).mockResolvedValueOnce({
-      ok: false,
-      text: async () => 'Rate Limit Exceeded',
-    } as unknown as Response);
+    vi.mocked(global.fetch).mockResolvedValueOnce(
+      new Response('Rate Limit Exceeded', { status: 429 })
+    );
 
-    await expect(fetchImages('test')).rejects.toThrow('API Error: Rate Limit Exceeded');
+    await expect(fetchImages('test')).rejects.toThrow(
+      'API Error: Rate Limit Exceeded'
+    );
   });
 });
