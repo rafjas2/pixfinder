@@ -41,19 +41,24 @@ export default async function handler(req: Request) {
     if (!response.ok) {
       const errorText = (await response.text()).trim();
       let friendlyError = `Pixabay API error: ${errorText}`;
-      
+
       if (response.status === 504 || errorText.includes('504')) {
-        friendlyError = 'Pixabay search timed out. Please try again in a few moments.';
-      } else if (response.status === 429 || errorText.toLowerCase().includes('rate limit')) {
-        friendlyError = 'Rate limit exceeded. Please try again in a few minutes.';
+        friendlyError =
+          'Pixabay search timed out. Please try again in a few moments.';
+      } else if (
+        response.status === 429 ||
+        errorText.toLowerCase().includes('rate limit')
+      ) {
+        friendlyError =
+          'Rate limit exceeded. Please try again in a few minutes.';
       } else if (response.status === 502 || response.status === 503) {
-        friendlyError = 'Pixabay service is temporarily unavailable. Please try again later.';
+        friendlyError =
+          'Pixabay service is temporarily unavailable. Please try again later.';
       }
 
-      return new Response(
-        JSON.stringify({ error: friendlyError }),
-        { status: response.status }
-      );
+      return new Response(JSON.stringify({ error: friendlyError }), {
+        status: response.status,
+      });
     }
 
     const data = await response.json();

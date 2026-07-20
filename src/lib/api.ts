@@ -45,14 +45,18 @@ export async function fetchImages(
 
     // Map common error patterns or status codes to friendly user messages
     if (response.status === 504 || errorMessage.includes('504')) {
-      throw new Error('Pixabay service timed out. Please try again in a few moments.');
+      throw new Error(
+        'Pixabay service timed out. Please try again in a few moments.'
+      );
     }
     if (
       response.status === 429 ||
       errorMessage.includes('429') ||
       errorMessage.toLowerCase().includes('rate limit')
     ) {
-      throw new Error('Rate limit exceeded. Please try again in a few minutes.');
+      throw new Error(
+        'Rate limit exceeded. Please try again in a few minutes.'
+      );
     }
     if (
       response.status === 502 ||
@@ -60,7 +64,9 @@ export async function fetchImages(
       errorMessage.includes('502') ||
       errorMessage.includes('503')
     ) {
-      throw new Error('Pixabay service is temporarily unavailable. Please try again later.');
+      throw new Error(
+        'Pixabay service is temporarily unavailable. Please try again later.'
+      );
     }
     if (
       response.status === 401 ||
@@ -68,7 +74,9 @@ export async function fetchImages(
       errorMessage.toLowerCase().includes('key') ||
       errorMessage.toLowerCase().includes('invalid')
     ) {
-      throw new Error('Pixabay API authentication failed. Please check your API key configuration.');
+      throw new Error(
+        'Pixabay API authentication failed. Please check your API key configuration.'
+      );
     }
 
     // Strip "Pixabay API error:" prefix if it is at the start of the message (we want clean message in UI)

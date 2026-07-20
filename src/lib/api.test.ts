@@ -53,10 +53,13 @@ describe('fetchImages API', () => {
 
   it('parses JSON errors from proxy and strips prefix', async () => {
     vi.mocked(global.fetch).mockResolvedValueOnce(
-      new Response(JSON.stringify({ error: 'Pixabay API error: Some random error' }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' },
-      })
+      new Response(
+        JSON.stringify({ error: 'Pixabay API error: Some random error' }),
+        {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      )
     );
 
     await expect(fetchImages('test')).rejects.toThrow('Some random error');
