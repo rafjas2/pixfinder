@@ -41,13 +41,54 @@ describe('fetchImages API', () => {
     expect(fetch).toHaveBeenCalledTimes(1);
   });
 
-  it('throws an error if the network response is not ok', async () => {
+  it('maps 429 status code to a friendly rate limit message', async () => {
     vi.mocked(global.fetch).mockResolvedValueOnce(
       new Response('Rate Limit Exceeded', { status: 429 })
     );
 
     await expect(fetchImages('test')).rejects.toThrow(
-      'API Error: Rate Limit Exceeded'
+      'Rate limit exceeded. Please try again in a few minutes.'
+    );
+  });
+
+  it('parses JSON errors from proxy and strips prefix', async () => {
+    vi.mocked(global.fetch).mockResolvedValueOnce(
+      new Response(JSON.stringify({ error: 'Pixabay API error: Some random error' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      })
+    );
+
+    await expect(fetchImages('test')).rejects.toThrow('Some random error');
+  });
+
+  it('maps 504 status code to friendly timeout message', async () => {
+    vi.mocked(global.fetch).mockResolvedValueOnce(
+      new Response('Gateway Timeout', { status: 504 })
+    );
+
+    await expect(fetchImages('test')).rejects.toThrow(
+      'Pixabay service timed out. Please try again in a few moments.'
+    );
+  });
+
+  it('maps 503 status code to friendly service unavailable message', async () => {
+    vi.mocked(global.fetch).mockResolvedValueOnce(
+      new Response('Service Unavailable', { status: 503 })
+    );
+
+    await expect(fetchImages('test')).rejects.toThrow(
+      'Pixabay service is temporarily unavailable. Please try again later.'
+    );
+  });
+
+  it('falls back to raw text for unknown errors', async () => {
+    vi.mocked(global.fetch).mockResolvedValueOnce(
+      new Response('Unrecognized raw error text', { status: 400 })
+    );
+
+    await expect(fetchImages('test')).rejects.toThrow(
+      'Unrecognized raw error text'
     );
   });
 });
