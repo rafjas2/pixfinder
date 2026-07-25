@@ -27,8 +27,18 @@ export function Search() {
   } = useQuery({
     queryKey: ['images', query],
     queryFn: () => fetchImages(query),
-    enabled: query.length > 0,
+    enabled: query.trim().length > 0,
     staleTime: 1000 * 60 * 5, // Cache for 5 minutes
+    retry: (failureCount, err) => {
+      if (
+        err instanceof Error &&
+        (err.message.includes('Rate limit') ||
+          err.message.includes('authentication'))
+      ) {
+        return false;
+      }
+      return failureCount < 2;
+    },
   });
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {

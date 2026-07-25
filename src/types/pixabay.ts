@@ -5,7 +5,7 @@ export const pixabayHitSchema = z.object({
   webformatURL: z.string().url(),
   largeImageURL: z.string().url(),
   user: z.string(),
-  userImageURL: z.string().url().or(z.string().length(0)), // Can be empty string
+  userImageURL: z.string().url().or(z.string().length(0)).nullish(), // Can be empty, null, or undefined
 });
 
 export const pixabayResponseSchema = z.object({

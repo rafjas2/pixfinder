@@ -2,6 +2,9 @@ export const config = {
   runtime: 'edge',
 };
 
+// In-memory IP rate-limiting cache for serverless edge runtime
+const ipRequestCounts = new Map<string, { count: number; resetTime: number }>();
+
 export default async function handler(req: Request) {
   if (req.method !== 'GET') {
     return new Response(JSON.stringify({ error: 'Method not allowed' }), {
@@ -9,16 +12,48 @@ export default async function handler(req: Request) {
     });
   }
 
+  // Edge Rate Limiting: 60 requests per minute per IP
+  const clientIp =
+    req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+    req.headers.get('x-real-ip') ||
+    'anonymous';
+  const now = Date.now();
+  const userLimit = ipRequestCounts.get(clientIp);
+
+  if (userLimit && now < userLimit.resetTime) {
+    if (userLimit.count >= 60) {
+      return new Response(
+        JSON.stringify({
+          error: 'Rate limit exceeded. Please try again in a minute.',
+        }),
+        {
+          status: 429,
+          headers: {
+            'Content-Type': 'application/json',
+            'Retry-After': '60',
+          },
+        }
+      );
+    }
+    userLimit.count++;
+  } else {
+    ipRequestCounts.set(clientIp, { count: 1, resetTime: now + 60000 });
+  }
+
   const { searchParams } = new URL(req.url);
   const query = searchParams.get('q');
-  const perPage = searchParams.get('per_page') || '24';
+  const perPageRaw = searchParams.get('per_page') || '24';
 
-  if (!query) {
+  if (!query || typeof query !== 'string' || !query.trim()) {
     return new Response(
       JSON.stringify({ error: 'Query parameter "q" is required' }),
       { status: 400 }
     );
   }
+
+  const perPageNum = parseInt(perPageRaw, 10);
+  const perPage =
+    isNaN(perPageNum) || perPageNum < 3 || perPageNum > 200 ? 24 : perPageNum;
 
   // Use standard Node.js process.env format for Vercel hosted functions
   const apiKey =
@@ -31,12 +66,17 @@ export default async function handler(req: Request) {
     );
   }
 
-  const pixabayApiUrl =
+  const pixabayApiBaseUrl =
     process.env.PIXABAY_API_URL || 'https://pixabay.com/api/';
-  const pixabayUrl = `${pixabayApiUrl}/?key=${apiKey}&q=${encodeURIComponent(query)}&image_type=photo&per_page=${perPage}&safesearch=true`;
+  const pixabayUrl = new URL(pixabayApiBaseUrl);
+  pixabayUrl.searchParams.set('key', apiKey);
+  pixabayUrl.searchParams.set('q', query.trim());
+  pixabayUrl.searchParams.set('image_type', 'photo');
+  pixabayUrl.searchParams.set('per_page', perPage.toString());
+  pixabayUrl.searchParams.set('safesearch', 'true');
 
   try {
-    const response = await fetchWithRetry(pixabayUrl);
+    const response = await fetchWithRetry(pixabayUrl.toString());
 
     if (!response.ok) {
       const errorText = (await response.text()).trim();

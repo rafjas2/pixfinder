@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 interface ModalProps {
   isOpen: boolean;
   image: string;
-  userImg: string | undefined;
+  userImg: string | undefined | null;
   user: string;
   onClose: () => void;
 }

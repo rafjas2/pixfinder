@@ -22,6 +22,10 @@ export class ErrorBoundary extends Component<Props, State> {
 
   public override componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error('Uncaught error in ErrorBoundary:', error, errorInfo);
+    // Observability Channel: Dispatch telemetry payload to error monitoring service if configured
+    if (typeof window !== 'undefined' && 'reportError' in window) {
+      window.reportError(error);
+    }
   }
 
   private handleReset = () => {

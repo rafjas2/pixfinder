@@ -1,21 +1,14 @@
 import { pixabayResponseSchema, type PixabayHit } from '@/types/pixabay';
-import { ENV } from '@/config/env';
 
 export async function fetchImages(
   query: string,
   perPage = 24
 ): Promise<PixabayHit[]> {
-  if (!query) return [];
+  const trimmedQuery = query ? query.trim() : '';
+  if (!trimmedQuery) return [];
 
-  // Use Vercel Serverless proxy in production to hide API key
-  const isProd = ENV.IS_PROD;
-  let url = '';
-
-  if (isProd) {
-    url = `/api/search?q=${encodeURIComponent(query)}&per_page=${perPage}`;
-  } else {
-    url = `${ENV.PIXABAY_API_URL}?key=${ENV.PIXABAY_API_KEY}&q=${encodeURIComponent(query)}&image_type=photo&per_page=${perPage}&safesearch=true`;
-  }
+  // Always route through the proxy endpoint to ensure dev/prod parity and prevent token leakage
+  const url = `/api/search?q=${encodeURIComponent(trimmedQuery)}&per_page=${perPage}`;
 
   const response = await fetch(url);
 

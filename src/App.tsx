@@ -18,7 +18,15 @@ export function App() {
     <Routes>
       <Route element={<AppLayout />}>
         <Route path="/" element={<Search />} />
-        {/* We can map other routes here later if needed */}
+        <Route
+          path="*"
+          element={
+            <div className="text-text flex flex-1 flex-col items-center justify-center py-20 text-center">
+              <h2 className="text-4xl font-bold">404</h2>
+              <p className="text-muted mt-2">Page not found</p>
+            </div>
+          }
+        />
       </Route>
     </Routes>
   );

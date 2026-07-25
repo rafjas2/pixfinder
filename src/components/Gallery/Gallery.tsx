@@ -1,6 +1,11 @@
-import { useState } from 'react';
-import { Modal } from '@/components/Modal/Modal';
+import { useState, lazy, Suspense } from 'react';
 import { type PixabayHit } from '@/types/pixabay';
+
+const Modal = lazy(() =>
+  import('@/components/Modal/Modal').then((module) => ({
+    default: module.Modal,
+  }))
+);
 
 interface GalleryProps {
   images: PixabayHit[];
@@ -57,13 +62,15 @@ export function Gallery({ images }: GalleryProps) {
       </div>
 
       {modalState.selectedImage && (
-        <Modal
-          isOpen={modalState.isOpen}
-          image={modalState.selectedImage.largeImageURL}
-          userImg={modalState.selectedImage.userImageURL}
-          user={modalState.selectedImage.user}
-          onClose={hideModal}
-        />
+        <Suspense fallback={null}>
+          <Modal
+            isOpen={modalState.isOpen}
+            image={modalState.selectedImage.largeImageURL}
+            userImg={modalState.selectedImage.userImageURL}
+            user={modalState.selectedImage.user}
+            onClose={hideModal}
+          />
+        </Suspense>
       )}
     </section>
   );
